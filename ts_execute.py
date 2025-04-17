@@ -30,6 +30,10 @@ except:
 # smsg(b"E" b"reboot_dfu")
 # ts_execute("reboot_dfu")
 
-ts_execute("
+cmds = sys.argv
+cmds.pop(0)
+
+if (cmds):
+	ts_execute(' '.join(cmds))
 
 ser.close()
