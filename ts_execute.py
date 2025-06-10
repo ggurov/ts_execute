@@ -6,6 +6,17 @@ import time
 import sys
 import zlib
 import struct
+import re
+
+def parse_messages(text_block, keyword="msg"):
+    pattern = r"`" + re.escape(keyword) + r"`\s*(.*?)(?=`" + re.escape(keyword) + r"`|$)"
+
+    messages = re.findall(pattern, text_block)
+
+    for message in messages:
+        print(message.strip()) # .strip() removes leading/trailing whitespace
+
+
 
 def m_crc32(c):
 	return zlib.crc32(c) & 0xffffffff
@@ -21,10 +32,26 @@ def smsg(msg):
 def ts_execute(cmd):
 	smsg(b"E" + bytes(cmd, "utf8"))
 
+def print_buf(s):
+	parse_messages(s.decode(errors='ignore'))
+
+#	for i in range(len(s)):
+#		if chr(s[i]) == "`":
+#			print("")
+#		print(chr(s[i]), end="")
+
+
+
 def ts_get_text():
 	smsg(b"G")
-	s = ser.read(500000)
-	print(s)
+	s = ser.read(50000)
+	print_buf(s)
+	s = ser.read(50000)
+	print_buf(s)
+
+#	print_buf(s)
+#	s = ser.read(50000)
+#	print_buf(s)
 
 
 ser = serial.Serial(port="/dev/ttyUSB0", baudrate=115200, timeout=1)
