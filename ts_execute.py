@@ -21,6 +21,12 @@ def smsg(msg):
 def ts_execute(cmd):
 	smsg(b"E" + bytes(cmd, "utf8"))
 
+def ts_get_text():
+	smsg(b"G")
+	s = ser.read(500000)
+	print(s)
+
+
 ser = serial.Serial(port="/dev/ttyUSB0", baudrate=115200, timeout=1)
 try:
        	ser.open()
@@ -35,5 +41,7 @@ cmds.pop(0)
 
 if (cmds):
 	ts_execute(' '.join(cmds))
+
+ts_get_text()
 
 ser.close()
